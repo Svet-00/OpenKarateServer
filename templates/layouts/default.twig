@@ -1,0 +1,63 @@
+{% set jsExt = app.environment == 'dev' ? '.js' : '.min.js' %}
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    {% block customStyles %}
+
+    {% endblock %}
+    {% include 'includes/head.twig' %}
+  </head>
+
+  <body id="page-top">
+    <div id="wrapper">
+      {% include 'includes/sidebar.twig' %}
+
+      <div id="content-wrapper" class="d-flex flex-column">
+        {% include 'includes/topbar.twig' %}
+        <div id="content">
+          <div class="container-fluid">
+            {% for label, messages in app.flashes %}
+              {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show"
+                  role="alert">
+                  {{ message }}
+                  <button type="button"
+                    class="close"
+                    data-dismiss="alert"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              {% endfor %}
+            {% endfor %}
+
+            {% block content %}
+
+            {% endblock %}
+          </div>
+        </div>
+        {% include 'includes/footer.twig' %}
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout -->
+    {% include 'includes/logout.twig' %}
+
+    {% block modals %}
+    {% endblock %}
+
+    <!-- Scripts -->
+    {% include 'includes/scripts.twig' %}
+    {% block customScripts %}
+
+    {% endblock %}
+    {% for script in usedOwnScripts %}
+      <script src="{{ asset(script ~ jsExt) }}"></script>
+    {% endfor %}
+  </body>
+</html>

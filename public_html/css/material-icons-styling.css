@@ -1,0 +1,40 @@
+.material-icons,
+.material-icons-outlined,
+.material-icons-round,
+.material-icons-sharp {
+  vertical-align: middle;
+}
+
+/* Rules for sizing the icon. */
+.ic-md-18 {
+  font-size: 18px !important;
+  width: 18px;
+}
+.ic-md-24 {
+  font-size: 24px !important;
+  width: 24px;
+}
+.ic-md-36 {
+  font-size: 36px !important;
+  width: 36px;
+}
+.ic-md-48 {
+  font-size: 48px !important;
+  width: 48px;
+}
+
+/* Rules for using icons as black on a light background. */
+.ic-md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+.ic-md-dark.ic-md-inactive {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+/* Rules for using icons as white on a dark background. */
+.ic-md-light {
+  color: rgba(255, 255, 255, 1);
+}
+.ic-md-light.ic-md-inactive {
+  color: rgba(255, 255, 255, 0.3);
+}

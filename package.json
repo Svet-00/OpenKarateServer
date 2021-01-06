@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.14.3",
+    "prettier": "^2.1.2"
+  },
+  "dependencies": {
+    "prettier-plugin-twig-melody": "^0.4.6"
+  }
+}

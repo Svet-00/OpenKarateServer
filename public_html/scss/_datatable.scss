@@ -1,0 +1,21 @@
+.dataTables_filter {
+  text-align: right;
+  margin-left: auto !important;
+}
+
+// th,
+// td {
+//   white-space: nowrap;
+// }
+
+.dataTables_paginate {
+  margin: 0;
+  margin-left: auto !important;
+  white-space: nowrap;
+  text-align: right;
+}
+
+table.dataTable tbody > tr.selected,
+table.dataTable tbody > tr > .selected {
+  background-color: rgba($color: #717384, $alpha: 0.7);
+}

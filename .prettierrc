@@ -1,0 +1,37 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "singleQuote": true,
+  "plugins": [
+    "./node_modules/@prettier/plugin-php",
+    "./node_modules/prettier-plugin-twig-melody"
+  ],
+  "overrides": [
+    {
+      "files": "*.php",
+      "options": {
+        "phpVersion": "7.4",
+        "trailingCommaPHP": false,
+        "tabWidth": 2,
+        "useTabs": false,
+        "singleQuote": true,
+        "braceStyle": "psr-2"
+      }
+    },
+    {
+      "files": "*.js",
+      "options": {
+        "semi": false
+      }
+    },
+    {
+      "files": "*.twig",
+      "options": {
+        "twigAlwaysBreakObjects": false,
+        "twigFollowOfficialCodingStandards": true,
+        "twigOutputEndblockName": false,
+        "twigMultiTags": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{% extends "layouts/simple.twig" %} {% block content %}
+
+<!-- Begin Page Content -->
+<div class="row my-5">
+  <div class="col">
+    <div class="card shadow">
+      <div class="card-body">
+        <!-- Error Text -->
+        <div class="text-center">
+          <div class="error mx-auto" data-text="403">403</div>
+          <p class="lead text-gray-800 mb-5">Доступ запрещён</p>
+          <p class="text-gray-500 mb-0">
+            Похоже, вы не обладаете правами доступа к этой странице.
+          </p>
+          <a href="/" role="button" class="backlink">&larr; Назад</a> или <a
+            href="{{ path('profile') }}">Профиль</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'layouts/default.twig' %}
+{% set title = 'Пользователи' %}
+
+{% block customStyles %}
+  <link rel="stylesheet"
+    type="text/css"
+    href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/kt-2.5.3/r-2.2.6/sp-1.2.2/sl-1.3.1/datatables.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.css" />
+{% endblock %}
+
+{% set usedOwnScripts = [
+  'js/datatables',
+  'js/dataTables.altEditor.free',
+  'js/users.table'
+] %}
+{% block customScripts %}
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/i18n/ru.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <div class="table-responsive p-1"
+        data-translation-url="{{ asset('data/dataTableLocalization.json') }}">
+        <table class="table table-bordered"
+          id="usersTable"
+          width="100%"
+          cellspacing="0"
+          data-get-url="{{ path('get_users') }}"
+          data-edit-url="{{ path('edit_any_user', { id: 'id' }) }}"></table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

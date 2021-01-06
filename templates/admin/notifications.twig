@@ -1,0 +1,24 @@
+{% extends 'layouts/default.twig' %}
+{% set title = 'Уведомления' %}
+
+{% block customStyles %}
+
+{% endblock %}
+
+{% set usedOwnScripts = [] %}
+{% block customScripts %}
+
+{% endblock %}
+
+{% block content %}
+  <div class="row h-100">
+    <div class="col-sm-12 col-lg-10 col-xl-6 mb-2 mx-auto">
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          {{ form_start(form) }}
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

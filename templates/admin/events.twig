@@ -1,0 +1,227 @@
+{% extends 'layouts/default.twig' %}
+{% set title = 'События' %}
+{% set usedOwnScripts = ['js/events'] %}
+
+{% block content %}
+  <div class="row h-100">
+    <div class="col-sm-12 col-lg-10 col-xl-6 mb-2 mx-auto">
+      <div class="card shadow mb-4">
+        <a href="#formCollapse"
+          class="d-block card-header py-3"
+          data-toggle="collapse"
+          role="button"
+          aria-expanded="true"
+          aria-controls="formCollapse">
+          <h6 class="m-0 font-weight-bold text-primary">
+            Форма
+          </h6>
+        </a>
+        <div class="collapse show" id="formCollapse">
+          <div class="card-body">
+            {{ form_start(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.address) }}
+            {{ form_row(form.startDate) }}
+            {{ form_row(form.endDate) }}
+            {{ form_row(form.type) }}
+            {{ form_row(form.level) }}
+
+            <div class="form-group">
+              <label for="eventForm_links" class="required">Ссылки</label>
+              <div id="eventForm_links">
+                {% for link in form.links %}
+                  <div class="card mb-2 text-sm">
+                    <div class="card-header d-flex flex-row-reverse">
+                      <a href="#"
+                        class="btn btn-secondary btn-sm btn-circle eventLinkDeleteBtn">
+                        <span class="material-icons-outlined">delete</span>
+                      </a>
+                    </div>
+                    <div class="card-body">
+                      {{ form_row(link) }}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              <a href="#"
+                class="btn btn-secondary btn-icon-split"
+                id="addLinkToEventBtn"
+                data-prototype="
+            {{ form_widget(
+                  form.links.vars.prototype
+                )|e }}
+            ">
+                <span class="icon text-white-50">
+                  <span class="material-icons-outlined">add</span>
+                </span>
+                <span class="text">Добавить ссылку</span>
+              </a>
+            </div>
+            {% if form.title.vars.value is not empty %}
+              {{
+                form_row(
+                  form.documents,
+                  {
+                    help: 'Внимание! Документы, загруженные во время '
+                      ~ 'редактирования события, будут добавлены '
+                      ~ 'существующим документам события.'
+                  }
+                )
+              }}
+              <div class="d-flex flex-row">
+                {{ form_row(form.submit, { label: 'Сохранить' }) }}
+                <a href="{{ url('admin_events') }}"
+                  class="btn btn-secondary mx-2">
+                  Отмена
+                </a>
+              </div>
+            {% endif %}
+            {{ form_end(form) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Event list -->
+      {% for event in events %}
+        <div class="card shadow mb-4">
+          <div class="card-header d-flex flex-row-reverse">
+            <a role="button"
+              href="#"
+              class="btn btn-danger btn-circle"
+              data-toggle="modal"
+              data-target="#deleteEventModal"
+              data-event-remove-url="{{
+              url(
+                'remove_event',
+                { id: event.id }
+              )
+              }}"
+              data-event-title="{{ event.title }}">
+              <span class="material-icons-outlined">delete_forever</span>
+            </a>
+            <a role="button"
+              class="btn btn-secondary btn-circle mx-2"
+              href="{{ url('admin_events') }}?action=edit&event_id={{
+              event.id
+              }}">
+              <span class="h-100 material-icons-outlined">edit</span>
+            </a>
+            <span class="mt-2 w-100 align-bottom">{{ event.title }}</span>
+          </div>
+          <div class="card-body">
+            <p>
+              {{ event.description }}
+            </p>
+            <p>
+              Адрес: {{ event.address }}
+            </p>
+            <div class="row row-cols-1 row-cols-md-2">
+              <div class="col">
+                <div class="card shadow my-2">
+                  <div class="card-body">
+                    <p>
+                      Дата начала: {{ event.startDate|date('d.m.Y i:H') }}
+                    </p>
+                    <p>
+                      Дата окончания: {{ event.endDate|date('d.m.Y i:H') }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card shadow my-2 p-0">
+                  <div class="card-body">
+                    <p>
+                      Тип соревнований: {{ event.type }}
+                    </p>
+                    <p>
+                      Уровень соревнований: {{ event.level }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row row-cols-1 row-cols-md-2">
+              {% if event.links is not empty %}
+                <div class="col">
+                  <div class="card shadow my-2">
+                    <div class="card-header">
+                      Ссылки:
+                    </div>
+                    <div class="card-body">
+                      <div class="col">
+                        {% for link in event.links %}
+                          <a class="row" href="{{ link.url }}" target="blank">
+                            {{ link.title ?? link.url }}
+                          </a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+              {% if event.documents is not empty %}
+                <div class="col">
+                  <div class="card shadow my-2">
+                    <div class="card-header">
+                      Документы:
+                    </div>
+                    <div class="card-body">
+                      <div class="col">
+                        {% for document in event.documents %}
+                          <a class="row"
+                            download="{{ document.originalFilename }}"
+                            href="{{
+                            path(
+                              'get_document_file',
+                              { filename: document.filename }
+                            )
+                            }}">
+                            {{ document.originalFilename }}
+                          </a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block modals %}
+  <div class="modal fade"
+    id="deleteEventModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="deleteEventModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteEventModalLabel">
+            Подтвердите ваше действие
+          </h5>
+          <button class="close"
+            type="button"
+            data-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body text-break"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">
+            Отмена
+          </button>
+          <button class="btn btn-danger">Удалить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

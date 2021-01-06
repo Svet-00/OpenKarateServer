@@ -1,0 +1,63 @@
+{% extends 'layouts/default.twig' %}
+
+{% set title = 'Панель управления' %}
+
+{% block customScripts %}
+{% if app.environment == 'dev' %}
+<script src="{{ asset('js/demo/chart-area-demo.js') }} "></script>
+<script src="{{ asset('js/demo/chart-bar-demo.js') }} "></script>
+<script src="{{ asset('js/demo/chart-pie-demo.js') }} "></script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Content Row -->
+<div class="row">
+  <!-- Earnings (Monthly) Card Example -->
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div
+              class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+              Зарегестрированных пользователей
+            </div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">
+              {{ registeredUsersCount }}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-user-friends fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Earnings (Monthly) Card Example -->
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-success shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div
+              class="text-xs font-weight-bold text-success text-uppercase mb-1">
+              Сегодня зарегистрировалось
+            </div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">
+              {{ registeredTodayUsersCount }}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-user-plus fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

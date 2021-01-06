@@ -1,0 +1,244 @@
+{% extends 'layouts/default.twig' %}
+
+{% set title = 'Профиль' %}
+{% set avatarActionBtnAdditionalClass = app.user.hasAvatar ? '' : 'disabled' %}
+
+{% block customStyles %}
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.css"
+    integrity="sha512-w+u2vZqMNUVngx+0GVZYM21Qm093kAexjueWOv9e9nIeYJb1iEfiHC7Y+VvmP/tviQyA5IR32mwN/5hTEJx6Ng=="
+    crossorigin="anonymous" />
+{% endblock %}
+
+{% set usedOwnScripts = ['js/profile'] %}
+{% block customScripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.js"
+    integrity="sha512-9pGiHYK23sqK5Zm0oF45sNBAX/JqbZEP7bSDHyt+nT3GddF+VFIcYNqREt0GDpmFVZI3LZ17Zu9nMMc9iktkCw=="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cropper/1.0.1/jquery-cropper.min.js"
+    integrity="sha512-V8cSoC5qfk40d43a+VhrTEPf8G9dfWlEJgvLSiq2T2BmgGRmZzB8dGe7XAABQrWj3sEfrR5xjYICTY4eJr76QQ=="
+    crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+  <div id="avatarUploadErrorAlert"
+    style="display:none;"
+    class="alert alert-danger alert-dismissible fade show"
+    role="alert">
+    При загрузке изображения произошла ошибка. Пожалуйста, повторите попытку
+    позже.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="row h-100">
+    <div class="col-sm-12 col-md-6 col-xl-3 mb-2 order-first">
+      <div class="card shadow pt-2">
+        <div class="card-body">
+          <div class="row no-gutters">
+            <img id="profileImg"
+              class="avatar mw-100 mx-auto"
+              style="max-height: 350px;"
+              src="{{
+              url(
+                'get_image',
+                {
+                  bucket: constant('App\\Enum\\PhotoBuckets::USERS'),
+                  filename: attribute(
+                    app.user,
+                    'avatarFilename',
+                    [constant('App\\Enum\\AvatarFormats::Square')]
+                  )
+                }
+              )
+              }}" />
+          </div>
+          <hr />
+          <div class="row">
+            <div class="col">
+              <label class="btn d-block m-0" for="newProfileImg">
+                Загрузить новую фотографию
+              </label>
+              <a class="btn d-block {{ avatarActionBtnAdditionalClass }}"
+                href="#"
+                role="button"
+                id="changeAvatarView"
+                data-original-image-src="{{
+                path(
+                  'get_image',
+                  {
+                    bucket: constant('App\\Enum\\PhotoBuckets::USERS'),
+                    filename: attribute(
+                      app.user,
+                      'avatarFilename',
+                      [constant('App\\Enum\\AvatarFormats::Original')]
+                    )
+                  }
+                )
+                }}">
+                Изменить миниатюру
+              </a>
+              <a role="button"
+                class="btn d-block text-danger {{
+                avatarActionBtnAdditionalClass
+                }}"
+                href="#"
+                id="deleteAvatar"
+                data-toggle="modal"
+                data-target="#deleteAvatarModal">
+                Удалить фотографию
+              </a>
+              <div style="display:none;" id="formContainer">
+                <input type="file"
+                  id="newProfileImg"
+                  accept="image/jpeg,image/png,image/gif,image/x-png" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-xl-6 mb-2 order-sm-last">
+      <div class="card shadow py-2">
+        <div class="card-body">
+          {{ form(userForm) }}
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-xl-3 mb-2 order-sm-2 order-xl-last">
+      <div class="card shadow py-2">
+        <div class="card-body">
+          {{ form_start(passwordForm) }}
+          {{ form_row(passwordForm.oldPassword) }}
+          {{ form_row(passwordForm.plainPassword) }}
+          {{ form_row(passwordForm.repeatPassword) }}
+          <div class="alert alert-danger"
+            id="passwordsNotEqualError"
+            style="display:none; ">
+            Введенные пароли не совпадают!
+          </div>
+          {{ form_rest(passwordForm) }}
+          {{ form_end(passwordForm) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade"
+    data-backdrop="static"
+    id="imageEditModal"
+    tabindex="-1"
+    data-original-image-src="{{
+    path(
+      'get_image',
+      {
+        bucket: constant('App\\Enum\\PhotoBuckets::USERS'),
+        filename: attribute(
+          app.user,
+          'getAvatarFilename',
+          [constant('App\\Enum\\AvatarFormats::Original')]
+        )
+      }
+    )
+    }}"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Настройка фотографии профиля
+          </h5>
+          <button type="button"
+            class="close modalDismiss"
+            data-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {% if app.user.hasAvatar == false %}
+            <div class="alert alert-info alert-dismissible fade show"
+              role="alert">
+              В приложении и на сайте используются две версии фотографии
+              профиля: квадратная и широкая. Здесь вы можете настроить оба
+              варианта фотографии.
+              <button type="button"
+                class="close"
+                data-dismiss="alert"
+                aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endif %}
+          <h1 class="h5 mb-1 text-gray-800 py-2">
+            Квадратная фотография
+          </h1>
+          <div style="max-height:500px;">
+            <img class="mw-100" id="imageToEditSquare" />
+          </div>
+          <h1 class="h5 mb-1 text-gray-800 pt-4 pb-2">
+            Широкая фотография
+          </h1>
+          <div style="max-height:500px;">
+            <img class="mw-100" id="imageToEditWide" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button"
+            class="btn btn-secondary modalDismiss"
+            data-dismiss="modal">
+            Закрыть
+          </button>
+          <button type="button"
+            class="btn btn-primary"
+            id="modalSave"
+            data-submit-url="{{ path('change_avatar') }}"
+            data-token="{{ csrf_token('update-avatar') }}">
+            Сохранить
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade"
+    id="deleteAvatarModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Внимание!
+          </h5>
+          <button type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Вы собираетесь удалить свою фотографию профиля. Это действие
+          невозможно отменить.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Закрыть
+          </button>
+          <a class="btn btn-danger"
+            href="{{
+            path(
+              'delete_avatar',
+              { token: csrf_token('delete-avatar') }
+            )
+            }}">
+            Удалить
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

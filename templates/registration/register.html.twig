@@ -1,0 +1,70 @@
+{% extends 'layouts/simple.twig' %}
+{% set title = 'Регистрация' %}
+{% block content %}
+<div
+  class="row row-cols-lg-2 row-cols-sm-1 justify-content-center px-md-5 mx-md-5 px-lg-0 mx-lg-0">
+  <div class="card o-hidden border-0 shadow-lg my-5">
+    <div class="card-body p-0">
+      <!-- Nested Row within Card Body -->
+      <div class="col-lg-12">
+        <div class="p-5">
+          <div class="text-center">
+            <h1 class="h4 text-gray-900 mb-4">
+              Регистрация
+            </h1>
+          </div>
+          {% for flashError in app.flashes('verify_email_error') %}
+          <div class="alert alert-danger" role="alert">
+            {{ flashError }}
+          </div>
+          {% endfor %}
+
+          {{ form_start(registrationForm) }}
+
+          {{ form_row(registrationForm.email) }}
+          {{ form_row(registrationForm.surname) }}
+          {{ form_row(registrationForm.name) }}
+          {{ form_row(registrationForm.patronymic) }}
+          {{ form_row(registrationForm.birthday) }}
+          {{ form_row(registrationForm.level) }}
+          {{ form_row(registrationForm.plainPassword) }}
+          {{ form_row(registrationForm.repeatPassword) }}
+
+          <div class="alert alert-danger" id="passwordsNotEqualError"
+            style="display:none; ">
+            Введенные пароли не совпадают!
+          </div>
+          {{ form_rest(registrationForm) }}
+          {{ form_end(registrationForm) }}
+          <hr />
+          <div class="text-center">
+            <span>Уже есть аккаунт?</span>
+            <a href="{{ path('login') }}">Вход</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block customScripts %}
+<script>
+  $(document).ready(function () {
+    $('form[name="registration_form"]').on('submit', function (e) {
+      if
+        ($('#registration_form_plainPassword')[0].value !==
+        $('#registration_form_repeatPassword')[0].value) {
+        e.preventDefault();
+        $("#passwordsNotEqualError").show();
+      }
+    });
+    $('#registration_form_plainPassword').on('focus', function (e) {
+      $("#passwordsNotEqualError").hide();
+    });
+    $('#registration_form_repeatPassword').on('focus', function (e) {
+      $("#passwordsNotEqualError").hide();
+    });
+
+  });
+</script>
+{% endblock %}

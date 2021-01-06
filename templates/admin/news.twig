@@ -1,0 +1,146 @@
+{% extends 'layouts/default.twig' %}
+{% set title = 'Новости' %}
+{% set usedOwnScripts = ['js/news'] %}
+
+{% block content %}
+  <div class="row h-100">
+    <div class="col-sm-12 col-lg-10 col-xl-6 mb-2 mx-auto">
+      <div class="card shadow mb-4">
+        <a href="#formCollapse"
+          class="d-block card-header py-3"
+          data-toggle="collapse"
+          role="button"
+          aria-expanded="true"
+          aria-controls="formCollapse">
+          <h6 class="m-0 font-weight-bold text-primary">
+            Форма
+          </h6>
+        </a>
+        <div class="collapse show" id="formCollapse">
+          <div class="card-body">
+            {{ form_start(form) }}
+            {{ form_row(form.text) }}
+
+            {% if form.photo is not null %}
+              {{ form_row(form.photo) }}
+              {{ form_row(form.documents) }}
+            {% else %}
+              <div class="d-flex flex-row">
+                {{ form_rest(form) }}
+                <a href="{{ url('admin_news') }}"
+                  class="btn btn-secondary mx-2">
+                  Отмена
+                </a>
+              </div>
+            {% endif %}
+            {{ form_end(form) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Posts list -->
+      {% for post in posts %}
+        <div class="card shadow mb-4">
+          <div class="card-header d-flex flex-row-reverse">
+            <a role="button"
+              href="#"
+              class="btn btn-danger btn-circle"
+              data-toggle="modal"
+              data-target="#deletePostModal"
+              data-post-text="{{ post.text }}"
+              data-post-remove-url="{{ url('remove_post', { id: post.id }) }}">
+              <span class="material-icons-outlined">delete_forever</span>
+            </a>
+            <a role="button"
+              class="btn btn-secondary btn-circle mx-2"
+              href="{{ url('admin_news') }}?action=edit&post_id={{ post.id }}">
+              <span class="h-100 material-icons-outlined">edit</span>
+            </a>
+            <span class="mt-2 w-100 align-bottom">
+              Опубликовано {{ post.createdAt|date('d.m.Y i:H') }}
+            </span>
+          </div>
+          <div class="card-body">
+            <p>
+              {{ post.text }}
+            </p>
+            {% if post.photos is not empty %}
+              <div class="row flex-nowrap overflow-auto py-2 w-100">
+                {% for photo in post.photos %}
+                  <div class="col-12 col-md-6 mx-auto">
+                    <div class="d-block">
+                      <img src="{{
+                        path(
+                          'get_image',
+                          {
+                            bucket: constant(
+                              'App\\Enum\\PhotoBuckets::GALLERY'
+                            ),
+                            filename: photo.serverFilename
+                          }
+                        )
+                        }}"
+                        alt="{{ photo.filename }}"
+                        class="w-100" />
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if post.documents is not empty %}
+              <div>
+                Документы:
+              </div>
+              <div class="col">
+                {% for document in post.documents %}
+                  <a class="row"
+                    download="{{ document.originalFilename }}"
+                    href="{{
+                    path(
+                      'get_document_file',
+                      { filename: document.filename }
+                    )
+                    }}">
+                    {{ document.originalFilename }}
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block modals %}
+  <div class="modal fade"
+    id="deletePostModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="deletePostModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deletePostModalLabel">
+            Подтвердите ваше действие
+          </h5>
+          <button class="close"
+            type="button"
+            data-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body text-break"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">
+            Отмена
+          </button>
+          <button class="btn btn-danger">Удалить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
