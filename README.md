@@ -29,3 +29,21 @@ Front-end Stack:
  - JS (JQuery, [DataTables](https://www.datatables.net/), [DataTable-AltEditor](https://github.com/KasperOlesen/DataTable-AltEditor) (модифицированный), [Select2](https://select2.org/))
  - SCSS
  - Gulp для сборки и минификации JS и SCSS
+ 
+## Скриншоты
+
+<img src="screenshots/profile.png"/>
+ 
+<img src="screenshots/admin_notifications.png"/>
+
+<img src="screenshots/admin_users.png"/>
+
+<img src="screenshots/admin_users_edit.png"/>
+
+<img src="screenshots/admin_events.png"/>
+ 
+<img src="screenshots/admin_news.png"/>
+
+<img src="screenshots/admin_gyms.png"/>
+
+<img src="screenshots/admin_schedule.png"/>
